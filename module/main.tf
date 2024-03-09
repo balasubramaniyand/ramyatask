@@ -13,3 +13,6 @@ module "s3bucket" {
 module "security" {
     source = "/root/module/security"  
 }
+module "ec2" {
+source = "/root/module/ec2"
+}
