@@ -34,7 +34,7 @@ variable "ami_id" {
   default = "ami-0eb4694aa6f249c52"
 }
 
-variable "security_group_name" {
+variable "security" {
   type = string
   description = "The name of the security group for the EC2 instance."
   default = "web-server-sg"
