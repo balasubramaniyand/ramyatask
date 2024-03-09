@@ -2,7 +2,7 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "aws_security_group" "wordpress" {
+resource "aws_security_group" "my_sg" {
   name        = var.security_group_name
   description = "Security group for WordPress EC2 instance"
 

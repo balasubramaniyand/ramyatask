@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "security_group_name" {
   type    = string
-  default = "wordpress-sg"
+  default = "my-sg"
 }
 
 variable "http_port" {

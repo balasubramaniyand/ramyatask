@@ -1,26 +1,33 @@
-variable "region" {
-  description = "AWS region for resources"
-  type        = string
+variable "aws_region" {
+  type=string
   default = "ap-south-1"
 }
-
-variable "vpc_id" {
-  description = "VPC ID"
+variable "vpc_cidr_block" {
+  description = "The CIDR block for the VPC"
   type        = string
+  default     = "10.0.0.0/16"
 }
 
-variable "alb_enabled" {
-  description = "Set to true to create ALB, false for DNS"
-  type        = bool
-}
-
-variable "alb_subnets" {
-  description = "Subnets for ALB"
-  type        = list(string)
-}
-
-variable "dns_name" {
-  description = "DNS name for WordPress"
+variable "public1_cidr_block" {
+  description = "The CIDR block for public subnet 1"
   type        = string
-  default = ""
+  default     = "10.0.1.0/24"
+}
+
+variable "public2_cidr_block" {
+  description = "The CIDR block for public subnet 2"
+  type        = string
+  default     = "10.0.2.0/24"
+}
+
+variable "health_check_path" {
+  description = "The path for the health check"
+  type        = string
+  default     = "/health"
+}
+
+variable "health_check_port" {
+  description = "The port for the health check"
+  type        = string
+  default     = "80"
 }
