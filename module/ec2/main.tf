@@ -1,79 +1,63 @@
-# Configure AWS Provider
+# Configure AWS provider
 provider "aws" {
-  region = var.aws_region # Replace with your desired region
+  region = "ap-southeast-1" # Replace with your desired region
 }
 
-# VPC Setup (Optional, replace with your existing VPC ID if one exists)
-resource "aws_vpc" "my_vpc" {
-  cidr_block = var.vpc_cidr_block
-}
-
-# Subnet Setup (Optional, replace with your existing subnet ID if one exists)
-resource "aws_subnet" "public" {
-  vpc_id           = aws_vpc.my_vpc.id # Assuming you created a VPC
-  cidr_block       = var.public_subnet_cidr_block
-  availability_zone = var.availability_zone # Replace with your desired AZ
-}
-
-# Security Group for EC2 Instance
-resource "aws_security_group" "web_server" {
-  name        = "web-server-sg" # Replace with a meaningful name for your security group
-  description = "Security group for web server instance"
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow SSH access from anywhere (for now)
-  }
+# Create a security group to allow access to port 80 (HTTP)
+resource "aws_security_group" "my-sg" {
+  name        = "web__dadg"
+  description = "Security group for web server"
 
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP access from anywhere (for now)
+    cidr_blocks = ["0.0.0.0/0"] # Allow access from anywhere (adjust for production)
   }
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] # Allow all outbound traffic
+    cidr_blocks = ["0.0.0.0/0"] # Allow outbound traffic (adjust for production)
   }
 }
 
-# EC2 Instance Creation
-resource "aws_instance" "wordpress" {
-  ami                    = var.ami_id
-  instance_type          = var.instance_type # Replace with your desired instance type
-  vpc_security_group_ids = [aws_security_group.web_server.id]
-  subnet_id              = aws_subnet.public.id
-  key_name               = "7" 
-  
-  root_block_device {
-    volume_size           = 8    # Specify the desired size of the EBS volume
-    volume_type           = "gp2" # Specify the type of EBS volume (e.g., gp2, io1)
-    delete_on_termination = true  # Specify whether the EBS volume should be deleted when the instance is terminated
-  }
+# Create an EC2 instance with the latest Amazon Linux 2 image
+resource "aws_instance" "my-dad" {
+  ami           = "ami-0eb4694aa6f249c52" # Replace with the latest Amazon Linux 2 AMI
+  instance_type = "t2.micro" # Adjust instance type based on your needs
 
+  # User data script to install and configure Apache and WordPress
   user_data = <<-EOF
-#!/bin/bash
-yum install httpd php-mysql -y
-amazon-linux-extras install -y php7.3
-cd /var/www/html
-echo "healthy" > healthy.html
-wget https://wordpress.org/latest.tar.gz
-tar -xzf latest.tar.gz 
-cp -r wordpress/* /var/www/html/
-rm -rf wordpress
-rm -rf latest.tar.gz
-chmod -R 755 wp-content
-chown -R apache:apache wp-content
-wget https://s3.amazonaws.com/bucketforwordpresslab-donotdelete/htaccess.txt
-mv htaccess.txt .htaccess
-chkconfig httpd on
-service httpd start
-EOF
+    #!/bin/bash
+    yum update -y
+    yum install httpd php php-mysql -y
+
+    # Install PHP 7.3 for WordPress compatibility
+    amazon-linux-extras install -y php7.3
+
+    systemctl enable httpd
+    systemctl start httpd
+
+    cd /var/www/html
+
+    echo "healthy" > healthy.html
+
+    wget https://wordpress.org/latest.tar.gz
+    tar -xzf latest.tar.gz
+    cp -r wordpress/* /var/www/html/
+    rm -rf wordpress
+    rm -rf latest.tar.gz
+
+    # Restrict file permissions for security (adjust as needed)
+    chown -R apache:apache /var/www/html/wp-content
+    chmod -R 755 /var/www/html/wp-content
+
+    # (Optional) Secure WordPress installation with additional steps
+    # - Create a strong database password and database user
+    # - Configure WordPress security plugins
+  EOF
 
   tags = {
     Name = "wordpress"
