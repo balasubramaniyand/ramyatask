@@ -1,7 +1,7 @@
 variable "aws_region" {
   type = string
   description = "The AWS region to deploy the resources in."
-  default = "ap-south-1"  # Match the region in your main.tf configuration
+  default = "ap-southeast-1"  # Match the region in your main.tf configuration
 }
 
 variable "vpc_cidr_block" {
