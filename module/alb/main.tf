@@ -2,30 +2,30 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "aws_vpc" "my_vpc" {
+resource "aws_vpc" "myalb_vpc" {
   cidr_block = var.vpc_cidr_block
 }
 
 resource "aws_subnet" "public1" {
-  vpc_id            = aws_vpc.my_vpc.id
+  vpc_id            = aws_vpc.myalb_vpc.id
   cidr_block        = var.public1_cidr_block
   availability_zone = "ap-southeast-1a"
 }
 
 resource "aws_subnet" "public2" {
-  vpc_id            = aws_vpc.my_vpc.id
+  vpc_id            = aws_vpc.myalb_vpc.id
   cidr_block        = var.public2_cidr_block
   availability_zone = "ap-southeast-1b"
 }
 
 # Internet Gateway
 resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.my_vpc.id
+  vpc_id = aws_vpc.myalb_vpc.id
 }
 
 # Route Table
-resource "aws_route_table" "my_vpc" {
-  vpc_id = aws_vpc.my_vpc.id
+resource "aws_route_table" "myalb_vpc" {
+  vpc_id = aws_vpc.myalb_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -46,7 +46,7 @@ resource "aws_lb_target_group" "app_tg" {
   port        = 80
   protocol    = "HTTP"
   target_type = "instance"
-  vpc_id      = aws_vpc.my_vpc.id
+  vpc_id      = aws_vpc.myalb_vpc.id
 
   health_check {
     interval            = 30
