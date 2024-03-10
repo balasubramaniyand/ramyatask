@@ -19,7 +19,7 @@ variable "public_subnet_cidr_block" {
 variable "availability_zone" {
   type = string
   description = "The availability zone to use for the subnet."
-  default = "ap-south-1a"  # Update this to a valid AZ for your chosen region
+  default = "ap-southeast-1a"  # Update this to a valid AZ for your chosen region
 }
 
 variable "instance_type" {
