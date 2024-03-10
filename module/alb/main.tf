@@ -9,13 +9,13 @@ resource "aws_vpc" "my_vpc" {
 resource "aws_subnet" "public1" {
   vpc_id            = aws_vpc.my_vpc.id
   cidr_block        = var.public1_cidr_block
-  availability_zone = "ap-south-1a"
+  availability_zone = "ap-southeast-1a"
 }
 
 resource "aws_subnet" "public2" {
   vpc_id            = aws_vpc.my_vpc.id
   cidr_block        = var.public2_cidr_block
-  availability_zone = "ap-south-1b"
+  availability_zone = "ap-southeast-1b"
 }
 
 # Internet Gateway
