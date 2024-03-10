@@ -4,24 +4,6 @@ variable "aws_region" {
   default = "ap-southeast-1"  # Match the region in your main.tf configuration
 }
 
-variable "vpc_cidr_block" {
-  type = string
-  description = "The CIDR block for the VPC."
-  default = "10.0.0.0/16"
-}
-
-variable "public_subnet_cidr_block" {
-  type = string
-  description = "The CIDR block for the public subnet."
-  default = "10.0.1.0/24"
-}
-
-variable "availability_zone" {
-  type = string
-  description = "The availability zone to use for the subnet."
-  default = "ap-southeast-1a"  # Update this to a valid AZ for your chosen region
-}
-
 variable "instance_type" {
   type = string
   description = "The instance type for the EC2 instance."
