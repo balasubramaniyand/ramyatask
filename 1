@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                script {
+                    git credentialsId: 'gitlab', url: 'https://pexgit.growipx.com/supportfirst/supportfirst-api-service.git', branch: 'devops'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            emailext body: "Hello Team,\n\nThe build to the staging environment is successful.\n\nProject: ${env.JOB_NAME}\nBuild Number: ${env.BUILD_NUMBER}\nURL: ${env.BUILD_URL}\nAdditional Message: This is an additional message for success.",
+            subject: "Build Success - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            to: 'balasubramaniyan.d@iopex.com'
+        }
+        failure {
+            emailext body: "Hello Team,\n\nThe build to the environment is unsuccessful.\n\nProject: ${env.JOB_NAME}\nBuild Number: ${env.BUILD_NUMBER}\nURL: ${env.BUILD_URL}\nAdditional Message: This is an additional message for failure.",
+            subject: "Build Failure - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            to: 'balasubramaniyan.d@iopex.com'
+        }
+    }
+}
