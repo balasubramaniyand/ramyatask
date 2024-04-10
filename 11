@@ -1,0 +1,3 @@
+root@demo-supportfirst:~# npm -v 
+-bash: /root/.nvm/versions/node/v16.20.2/bin/npm: /usr/bin/env: bad interpreter: No such file or directory
+root@demo-supportfirst:~# 
