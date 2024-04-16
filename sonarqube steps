@@ -1,0 +1,32 @@
+root@ip-172-31-44-68:/tmp# history
+    1  sysctl -w vm.max_map_count=524288
+    2  sysctl -w fs.file-max=131072
+    3  ulimit -n 131072
+    4  ulimit -u 8192
+    5  sudo vi /etc/security/limits.conf
+    6  sudo apt-get update
+    7  sudo apt-get install wget unzip -y
+    8  sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+    9  wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
+   10  sudo apt-get -y install postgresql postgresql-contrib
+   11  sudo systemctl start postgresql
+   12  sudo systemctl enable postgresql
+   13  Change the password for the default PostgreSQL
+   14  sudo systemctl enable postgresql
+   15  su - postgres
+   16  sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.4.87374.zip
+   17  clear
+   18  sudo unzip sonarqube-9.9.4.87374.zip -d /opt
+   19  clear
+   20  sudo mv /opt/sonarqube-9.9.4.87374.zip /opt/sonarqube
+   21  sudo mv /opt/sonarqube-9.9.4.87374 /opt/sonarqube
+   22  sudo vi /etc/systemd/system/sonar.service
+   23  sudo systemctl start sonar
+   24  sudo systemctl enable sonar
+   25  sudo systemctl status sonar
+   26  sudo vi  /opt/sonarqube/conf/sonar.properties
+   27  sudo systemctl stop sonar
+   28  sudo systemctl start sonar
+   29  sudo systemctl status sonar
+   30  history
+root@ip-172-31-44-68:/tmp#
