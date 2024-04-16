@@ -1,0 +1,99 @@
+sysctl -w vm.max_map_count=524288
+sysctl -w fs.file-max=131072
+ulimit -n 131072
+ulimit -u 8192
+
+
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+
+wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
+
+sudo apt-get -y install postgresql postgresql-contrib
+
+sudo systemctl start postgresql
+
+sudo systemctl enable postgresql
+
+sudo passwd postgres
+
+su - postgres
+
+createuser sonar
+
+ALTER USER sonar WITH ENCRYPTED password 'admin';
+
+CREATE DATABASE sonarqube OWNER sonar;
+
+grant all privileges on DATABASE sonarqube to sonar;
+ 
+cd /tmp
+
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.4.87374.zip
+
+ sudo unzip sonarqube-9.9.4.87374.zip -d/opt
+
+sudo mv /tmp/sonarqube-9.9.4.87374.zip /opt/sonarqube
+
+sudo groupadd sonar
+
+ sudo useradd -c "user to run SonarQube" -d /opt/sonarqube -g sonar sonar 
+ sudo chown sonar:sonar /opt/sonarqube -R
+
+sudo vi /opt/sonarqube/conf/sonar.properties
+add this line
+RUN_AS_USER=sonar
+
+sudo vi /opt/sonarqube/bin/linux-x86-64/sonar.sh
+sudo su sonar
+ cd /opt/sonarqube/bin/linux-x86-64/
+./sonar.sh start
+./sonar.sh status
+
+tail /opt/sonarqube/logs/sonar.log
+024.04.14 12:28:54 INFO  app[][o.s.a.AppFileSystem] Cleaning or creating temp directory /opt/sonarqube/temp
+2024.04.14 12:28:54 INFO  app[][o.s.a.es.EsSettings] Elasticsearch listening on [HTTP: 127.0.0.1:9001, TCP: 127.0.0.1:39097]
+2024.04.14 12:28:55 INFO  app[][o.s.a.ProcessLauncherImpl] Launch process[ELASTICSEARCH] from [/opt/sonarqube/elasticsearch]: /opt/sonarqube/elasticsearch/bin/elasticsearch
+2024.04.14 12:28:55 INFO  app[][o.s.a.SchedulerImpl] Waiting for Elasticsearch to be up and running
+2024.04.14 12:29:03 INFO  app[][o.s.a.SchedulerImpl] Process[es] is up
+2024.04.14 12:29:03 INFO  app[][o.s.a.ProcessLauncherImpl] Launch process[WEB_SERVER] from [/opt/sonarqube]: /usr/lib/jvm/java-17-openjdk-amd64/bin/java -Djava.awt.headless=true -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/opt/sonarqube/temp -XX:-OmitStackTraceInFastThrow --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED -Dcom.redhat.fips=false -Xmx512m -Xms128m -XX:+HeapDumpOnOutOfMemoryError -Dhttp.nonProxyHosts=localhost|127.*|[::1] -cp ./lib/sonar-application-9.9.4.87374.jar:/opt/sonarqube/lib/jdbc/postgresql/postgresql-42.5.1.jar org.sonar.server.app.WebServer /opt/sonarqube/temp/sq-process14753143042875984262properties
+2024.04.14 12:29:45 INFO  app[][o.s.a.SchedulerImpl] Process[web] is up
+2024.04.14 12:29:45 INFO  app[][o.s.a.ProcessLauncherImpl] Launch process[COMPUTE_ENGINE] from [/opt/sonarqube]: /usr/lib/jvm/java-17-openjdk-amd64/bin/java -Djava.awt.headless=true -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/opt/sonarqube/temp -XX:-OmitStackTraceInFastThrow --add-opens=java.base/java.util=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --a
+
+ cd /opt/sonarqube/bin/linux-x86-64/
+./sonar.sh stop
+
+sudo vi /etc/systemd/system/sonar.service
+
+
+[Unit]
+Description=SonarQube service
+After=syslog.target network.target
+
+[Service]
+Type=forking
+
+ExecStart=/opt/sonarqube/bin/linux-x86-64/sonar.sh start
+ExecStop=/opt/sonarqube/bin/linux-x86-64/sonar.sh stop
+
+User=sonar
+Group=sonar
+Restart=always
+
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target
+
+
+sudo systemctl start sonar
+
+sudo vi /opt/sonarqube/conf/sonar.properties
+
+sudo sysctl -w vm.max_map_count=262144
+
+
+sudo systemctl start sonar
+
+ sudo systemctl enable sonar
+ sudo systemctl status sonar
