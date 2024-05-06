@@ -15,26 +15,17 @@ pipeline {
             }
         }
     }
-}
-
-  post {
+ post {
         always {
             script {
-                def projectName = env.JOB_NAME
-                def buildNumber = env.BUILD_NUMBER
-                def buildUrl = env.BUILD_URL
-                
-                if (currentBuild.result == 'FAILURE') {
+if (currentBuild.result == 'FAILURE') {
                     mail to: 'balasubramaniyan.d@iopex.com',
-                     cc: 'rohith.venkatesh@iopex.com',
+                     //cc: 'rohith.venkatesh@iopex.com',
                     subject: 'Build unsuccessful',
-                    body: "Hello Team,\n\nThe build to the staging environment is unsuccessful.\n\nPlease find the required details below.\n\nProject: ${projectName}\n\nBuild Number: ${buildNumber}\n\nURL: ${buildUrl}"
-                } else {
-                    mail to: 'balasubramaniyan.d@iopex.com',
-                    subject: 'Build successful',
-                    body: "Hello Team,\n\nThe build to the staging environment is successful.\n\nPlease find the required details below.\n\nProject: ${projectName}\n\nBuild Number: ${buildNumber}\n\nURL: ${buildUrl}"
-                }
+                    body: "Hello Team,\n\n "
+                } 
             }
         }
-    }
+            
 
+  
