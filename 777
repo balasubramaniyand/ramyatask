@@ -22,8 +22,8 @@ pipeline {
                 if (currentBuild.result == 'FAILURE') {
                     mail to: 'balasubramaniyan.d@iopex.com',
                     //cc: 'rohith.venkatesh@iopex.com',
-                    subject: 'Build unsuccessful',
-                    body: "Hello Team,\n\nThe build to the staging environment is unsuccessful.\n\nPlease find the required details below.\n\nProject: ${env.JOB_NAME}\n\nBuild Number: ${env.BUILD_NUMBER}\n\nURL: ${env.BUILD_URL}"
+                    subject: 'IMAP WAR NOT RUNING',
+                    body: "Hello Team,\n\n Imap war file not ruining the server pls any one check the server .\n\nPlease find any one"
                 }
             }
         }
