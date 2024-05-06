@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Check Port 9000') {
+            steps {
+                script {
+                    def portStatus = sh(script: 'netstat -tuln | grep 9000', returnStatus: true)
+                    if (portStatus == 0) {
+                        sendEmailNotification()
+                    } else {
+                        echo 'Port 9000 is not running'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                if (currentBuild.result == 'FAILURE') {
+                    mail to: 'balasubramaniyan.d@iopex.com',
+                    //cc: 'rohith.venkatesh@iopex.com',
+                    subject: 'Build unsuccessful',
+                    body: "Hello Team,\n\nThe build to the staging environment is unsuccessful.\n\nPlease find the required details below.\n\nProject: ${env.JOB_NAME}\n\nBuild Number: ${env.BUILD_NUMBER}\n\nURL: ${env.BUILD_URL}"
+                }
+            }
+        }
+    }
+}
