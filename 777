@@ -28,4 +28,37 @@ pipeline {
             }
         }
     }
+
+
+Started by user unknown or anonymous
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/testmail imap
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Check Port 9000)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ netstat -tuln
++ grep 9000
+[Pipeline] echo
+Port 9000 is not running
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+
 }
