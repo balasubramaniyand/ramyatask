@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Check Port 9000') {
+            steps {
+                script {
+                    def portStatus = sh(script: 'netstat -tuln | grep 9000', returnStatus: true)
+                    if (portStatus == 0) {
+                        echo 'Port 9000 is running'
+                    } else {
+                        echo 'Port 9000 is not running'
+                        currentBuild.result = 'FAILURE'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                if (currentBuild.result == 'FAILURE') {
+                    mail to: 'balasubramaniyan.d@iopex.com',
+                    //cc: 'rohith.venkatesh@iopex.com',
+                    subject: 'IMAP WAR NOT RUNNING',
+                    body: "Hello Team,\n\nImap war file is not running on the server. Please check the server."
+                }
+            }
+        }
+    }
+}
