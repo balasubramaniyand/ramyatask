@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Function to send email notification
+send_email() {
+    SUBJECT="$1"
+    BODY="$2"
+    TO="your_email@example.com"
+    echo "$BODY" | mail -s "$SUBJECT" "$TO"
+}
+
+# Check if port 8084 is listening
+netstat -tuln | grep ':8084' > /dev/null
+
+# If the return status is 0, port 8084 is running
+if [ $? -eq 0 ]; then
+    echo "Port 8084 is running"
+    send_email "Port 8084 Status Notification" "Port 8084 is running."
+else
+    echo "Port 8084 is not running"
+    send_email "Port 8084 Status Notification" "Port 8084 is not running. Please check."
+fi
